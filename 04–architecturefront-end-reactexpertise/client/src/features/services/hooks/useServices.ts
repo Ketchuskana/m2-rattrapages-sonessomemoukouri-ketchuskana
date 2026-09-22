@@ -5,5 +5,6 @@ export function useServices() {
   return useQuery({
     queryKey: ["services"],
     queryFn: getServices,
+    staleTime: 5 * 60 * 1000,
   });
 }
