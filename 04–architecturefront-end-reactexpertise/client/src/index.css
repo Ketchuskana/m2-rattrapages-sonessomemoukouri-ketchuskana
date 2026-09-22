@@ -292,6 +292,23 @@ button {
   color: #2563eb;
 }
 
+.state-message {
+  padding: 50px;
+  text-align: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.error-state {
+  color: #991b1b;
+}
+
+.error-state h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
 /* ============================= */
 /* PAGE HEADER */
 /* ============================= */
