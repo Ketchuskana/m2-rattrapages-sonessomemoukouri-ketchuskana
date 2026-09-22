@@ -10,7 +10,6 @@ Application web de gestion de rendez-vous développée avec React et TypeScript.
 - Création de réservations
 - Gestion des rendez-vous
 - Modification du statut
-- Email client
 - Email administrateur
 - Gestion des erreurs
 - Responsive design
