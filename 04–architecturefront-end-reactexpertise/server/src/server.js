@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 
@@ -8,6 +10,10 @@ const PORT = 3001;
 app.use(cors());
 
 app.use(express.json());
+
+const {
+  sendBookingEmails,
+} = require("./services/emailService");
 
 const services = [
   {
@@ -74,7 +80,43 @@ app.get("/api/slots", (req, res) => {
   res.json(availableSlots);
 });
 
-app.post("/api/bookings", (req, res) => {
+app.get("/api/bookings", (req, res) => {
+  res.json(bookings);
+});
+
+app.patch("/api/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  const { status } = req.body;
+
+  const booking = bookings.find(
+    (booking) => booking.id === bookingId
+  );
+
+  if (!booking) {
+    return res.status(404).json({
+      message: "Réservation introuvable.",
+    });
+  }
+
+  const allowedStatuses = [
+    "PENDING",
+    "CONFIRMED",
+    "CANCELLED",
+    "COMPLETED",
+  ];
+
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({
+      message: "Statut invalide.",
+    });
+  }
+
+  booking.status = status;
+
+  res.json(booking);
+});
+
+app.post("/api/bookings", async (req, res) => {
   const {
     firstName,
     lastName,
@@ -110,9 +152,21 @@ app.post("/api/bookings", (req, res) => {
     status: "PENDING",
   };
 
+  // 1. On enregistre d'abord la réservation
   bookings.push(newBooking);
 
-  res.status(201).json(newBooking);
+  // 2. Puis on tente d'envoyer les emails
+  try {
+    await sendBookingEmails(newBooking);
+  } catch (error) {
+    console.error(
+      "Erreur lors de l'envoi des emails :",
+      error
+    );
+  }
+
+  // 3. La réservation reste créée même si l'email échoue
+  return res.status(201).json(newBooking);
 });
 
 app.listen(PORT, () => {

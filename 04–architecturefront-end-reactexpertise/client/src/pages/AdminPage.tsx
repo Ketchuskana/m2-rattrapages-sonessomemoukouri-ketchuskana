@@ -1,61 +1,102 @@
-const bookings = [
-  {
-    id: 1,
-    customer: "Marie Dupont",
-    service: "Consultation standard",
-    date: "22/09/2026",
-    time: "09:00",
-    status: "confirmed",
-  },
-  {
-    id: 2,
-    customer: "Sandra Mbele",
-    service: "Consultation premium",
-    date: "22/09/2026",
-    time: "11:00",
-    status: "pending",
-  },
-  {
-    id: 3,
-    customer: "Paul Martin",
-    service: "Accompagnement",
-    date: "23/09/2026",
-    time: "14:00",
-    status: "confirmed",
-  },
-];
+import { useBookings } from "../features/admin/hooks/useBookings";
+import { useUpdateBookingStatus } from "../features/admin/hooks/useUpdateBookingStatus";
 
 export default function AdminPage() {
+  const {
+    data: bookings = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useBookings();
+
+  const updateStatus =
+    useUpdateBookingStatus();
+
+  const confirmedCount =
+    bookings.filter(
+      (booking) =>
+        booking.status === "CONFIRMED"
+    ).length;
+
+  const pendingCount =
+    bookings.filter(
+      (booking) =>
+        booking.status === "PENDING"
+    ).length;
+
+  if (isLoading) {
+    return (
+      <div className="container section">
+        <div className="state-message">
+          Chargement des réservations...
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container section">
+        <div className="state-message error-state">
+          <h3>
+            Impossible de charger les réservations.
+          </h3>
+
+          <button
+            className="btn btn-primary"
+            onClick={() => refetch()}
+          >
+            Réessayer
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <section className="page-header">
         <div className="container">
           <h1>Administration</h1>
-          <p>Gérez les rendez-vous et suivez votre activité.</p>
+
+          <p>
+            Gérez les rendez-vous et suivez
+            l'activité.
+          </p>
         </div>
       </section>
 
       <section className="section">
         <div className="container">
+
           <div className="admin-grid">
             <div className="stat-card">
-              <p>Rendez-vous aujourd'hui</p>
-              <h3>8</h3>
-            </div>
-
-            <div className="stat-card">
-              <p>Cette semaine</p>
-              <h3>32</h3>
+              <p>Total</p>
+              <h3>{bookings.length}</h3>
             </div>
 
             <div className="stat-card">
               <p>Confirmés</p>
-              <h3>27</h3>
+              <h3>{confirmedCount}</h3>
             </div>
 
             <div className="stat-card">
               <p>En attente</p>
-              <h3>5</h3>
+              <h3>{pendingCount}</h3>
+            </div>
+
+            <div className="stat-card">
+              <p>Terminés</p>
+
+              <h3>
+                {
+                  bookings.filter(
+                    (booking) =>
+                      booking.status ===
+                      "COMPLETED"
+                  ).length
+                }
+              </h3>
             </div>
           </div>
 
@@ -64,39 +105,89 @@ export default function AdminPage() {
               <thead>
                 <tr>
                   <th>Client</th>
-                  <th>Service</th>
                   <th>Date</th>
                   <th>Heure</th>
                   <th>Statut</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
               <tbody>
                 {bookings.map((booking) => (
                   <tr key={booking.id}>
-                    <td>{booking.customer}</td>
-                    <td>{booking.service}</td>
+                    <td>
+                      {booking.firstName}{" "}
+                      {booking.lastName}
+                    </td>
+
                     <td>{booking.date}</td>
+
                     <td>{booking.time}</td>
 
                     <td>
-                      <span
-                        className={
-                          booking.status === "confirmed"
-                            ? "status status-confirmed"
-                            : "status status-pending"
+                      <span className="status">
+                        {booking.status}
+                      </span>
+                    </td>
+
+                    <td className="admin-actions">
+                      <button
+                        className="btn btn-secondary"
+                        disabled={
+                          updateStatus.isPending
+                        }
+                        onClick={() =>
+                          updateStatus.mutate({
+                            bookingId:
+                              booking.id,
+                            status:
+                              "CONFIRMED",
+                          })
                         }
                       >
-                        {booking.status === "confirmed"
-                          ? "Confirmé"
-                          : "En attente"}
-                      </span>
+                        Confirmer
+                      </button>
+
+                      <button
+                        className="btn btn-secondary"
+                        disabled={
+                          updateStatus.isPending
+                        }
+                        onClick={() =>
+                          updateStatus.mutate({
+                            bookingId:
+                              booking.id,
+                            status:
+                              "COMPLETED",
+                          })
+                        }
+                      >
+                        Terminer
+                      </button>
+
+                      <button
+                        className="btn btn-secondary"
+                        disabled={
+                          updateStatus.isPending
+                        }
+                        onClick={() =>
+                          updateStatus.mutate({
+                            bookingId:
+                              booking.id,
+                            status:
+                              "CANCELLED",
+                          })
+                        }
+                      >
+                        Annuler
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
         </div>
       </section>
     </>
