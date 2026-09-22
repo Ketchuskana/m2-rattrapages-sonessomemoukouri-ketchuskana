@@ -72,15 +72,16 @@ npm test
 
 Frontend :
 
-cd client
-npm install
-npm run dev
+- cd client
+- npm install
+- npm run dev
 
 Backend :
 
-cd server
-npm install
-npm run dev
+- cd server
+- npm install
+- npm run dev
+  
 Variables d'environnement
 
 Créer :
@@ -89,13 +90,11 @@ server/.env
 
 Ajouter :
 
-RESEND_API_KEY=...
-ADMIN_EMAIL=...
-Évolutions futures
-Paiement d'acompte avec Stripe
-Authentification administrateur
-Base PostgreSQL
-Notifications SMS
-Synchronisation Google Calendar
+- RESEND_API_KEY=...
+- ADMIN_EMAIL=...
+
+## Évolutions futures
+- Paiement d'acompte avec Stripe
+- Synchronisation Google Calendar
 
 ---
