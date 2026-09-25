@@ -94,7 +94,7 @@ flowchart TB
 
 ## Choix techniques
 
-### 1. Organisation du projet par fonctionnalité
+### Organisation du projet par fonctionnalité
 
 J’ai choisi d’organiser le projet par fonctionnalité. Par exemple, tout ce qui concerne la réservation est regroupé dans le dossier `features/booking`.
 
@@ -104,7 +104,7 @@ Avec une organisation classique par type, on aurait par exemple les composants d
 
 L’organisation par fonctionnalité rend donc le projet plus lisible, plus facile à maintenir et permet aussi de mieux voir les dépendances entre les différentes parties de l’application.
 
-### 2. TanStack Query et Zustand
+### TanStack Query et Zustand
 
 Pour la gestion des données venant de l’API, j’ai utilisé TanStack Query.
 
@@ -116,7 +116,7 @@ Pour l’état global de l’application, notamment certaines informations liée
 
 Je l’ai choisi parce qu’il est assez simple et lisible. Il ne nécessite pas de `Provider` autour de l’application et le store peut également être testé directement, sans avoir besoin de rendre un composant React.
 
-### 3. Chargement des pages et optimisation
+### Chargement des pages et optimisation
 
 Toutes les pages principales sont chargées avec `React.lazy` et `Suspense` dans le fichier `app/router.tsx`.
 
@@ -130,11 +130,11 @@ L’objectif est donc de réduire ce qui est chargé au démarrage et d’améli
 
 À cela s’ajoute le cache de TanStack Query, qui évite certaines requêtes répétitives et rend le retour sur des pages déjà consultées beaucoup plus rapide.
 
-### 4. Compromis
+### Compromis
 
 Au niveau de la bdd, par faute de temps et parce que c'était plus simple, j'ai opté pour un json au lieu de PostgreSQL et Prisma par exemple. Aussi, le paiement de l'acompte est simulé : pas le temps de mettre en place Stripe.
 
-### 5. Tests
+### Tests
 
 J’ai également mis en place **14 tests répartis dans 5 fichiers**, avec Vitest et React Testing Library.
 
@@ -162,31 +162,32 @@ npm test
 
 ## Installation
 
-Frontend :
+Backend (à faire en premier) :
 
-- cd client
-- npm install
-- npm run dev
-
-Backend :
+### Installer les dépendances :
 
 - cd server
 - npm install
-- npm run dev
-  
-Variables d'environnement
 
-Créer :
-
-server/.env
-
-Ajouter :
+### Variables d'environnement : copier server/.env.example en server/.env, puis remplir :
 
 - RESEND_API_KEY=...
 - ADMIN_EMAIL=...
 - JWT_SECRET=...
 
-Créer un compte admin (dans server) : npm run create-admin -- email motdepasse
+La clé RESEND_API_KEY est obligatoire, sinon le serveur ne démarre pas. Pour l'obtenir, créer un compte gratuit sur https://resend.com, puis générer une clé dans API Keys (https://resend.com/api-keys).
+
+JWT_SECRET est aussi obligatoire : on peut mettre n'importe quelle longue chaîne de caractères (par exemple une trentaine de lettres et chiffres au hasard).
+
+### Créer un compte admin (toujours dans server) : npm run create-admin -- email motdepasse
+
+### Lancer le serveur : npm run dev
+
+Frontend (dans un deuxième terminal) :
+
+- cd client
+- npm install
+- npm run dev
 
 ## Évolutions futures
 - Paiement d'acompte avec Stripe
