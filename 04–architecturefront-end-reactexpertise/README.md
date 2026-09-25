@@ -197,4 +197,9 @@ Frontend (dans un deuxième terminal) :
 - Ajout base de données Postgres avec prisma
 - Ajout Email validation côté client (il faut un nom de domaine pour se faire)
 
+## Liens vidéos
+- Demo site web prise de rdv: https://www.loom.com/share/39925eb0319b4d29b74942428947ef17
+- Demo site web coté admin : https://www.loom.com/share/26d6cf63195e43268ddc42af90ddd8d4
+- 
+
 ---
