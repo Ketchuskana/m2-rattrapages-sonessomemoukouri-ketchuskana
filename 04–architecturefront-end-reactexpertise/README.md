@@ -195,5 +195,6 @@ Frontend (dans un deuxième terminal) :
 - Paiement d'acompte avec Stripe
 - Synchronisation Google Calendar
 - Ajout base de données Postgres avec prisma
+- Ajout Email validation côté client (il faut un nom de domaine pour se faire)
 
 ---
