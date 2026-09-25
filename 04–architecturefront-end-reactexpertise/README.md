@@ -179,7 +179,9 @@ La clé RESEND_API_KEY est obligatoire, sinon le serveur ne démarre pas. Pour l
 
 JWT_SECRET est aussi obligatoire : on peut mettre n'importe quelle longue chaîne de caractères (par exemple une trentaine de lettres et chiffres au hasard).
 
-### Créer un compte admin (toujours dans server) : npm run create-admin -- email motdepasse
+### Créer un compte admin (toujours dans server) : 
+
+npm run create-admin -- email motdepasse
 
 ### Lancer le serveur : npm run dev
 
