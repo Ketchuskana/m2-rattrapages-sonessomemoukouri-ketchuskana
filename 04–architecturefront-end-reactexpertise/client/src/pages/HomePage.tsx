@@ -7,18 +7,19 @@ export default function HomePage() {
         <div className="container hero-content">
           <div className="hero-text">
             <h1>
-              Vos rendez-vous, <span>simplement.</span>
+              Sublimez vos mains, <span>réservez votre moment.</span>
             </h1>
 
             <p>
-              Réservez votre prestation en quelques clics, choisissez le
-              créneau qui vous convient et recevez immédiatement votre
-              confirmation.
+               Choisissez votre prestation,
+                sélectionnez votre créneau
+                et réservez votre rendez-vous
+                en quelques clics.
             </p>
 
             <div className="hero-actions">
               <Link to="/booking" className="btn btn-primary">
-                Réserver maintenant
+                 Réserver ma pose
               </Link>
 
               <Link to="/services" className="btn btn-secondary">
@@ -33,7 +34,7 @@ export default function HomePage() {
 
             <div className="booking-preview">
               <div className="preview-line">
-                <strong>1. Choisissez votre service</strong>
+                <strong>1. Choisissez votre prestation</strong>
                 <span>Consultez nos prestations et nos tarifs.</span>
               </div>
 
@@ -44,7 +45,7 @@ export default function HomePage() {
 
               <div className="preview-line">
                 <strong>3. Confirmez votre rendez-vous</strong>
-                <span>Recevez votre confirmation directement par email.</span>
+                <span>En vous acquittant de l'accompte.</span>
               </div>
             </div>
           </div>

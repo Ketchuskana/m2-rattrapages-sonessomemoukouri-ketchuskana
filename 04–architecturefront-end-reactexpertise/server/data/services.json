@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Pose complète gel",
+    "description": "Pose complète avec rallongement et finition personnalisée.",
+    "duration": 120,
+    "price": 35,
+    "deposit": 15
+  },
+  {
+    "id": 2,
+    "name": "Semi-permanent",
+    "description": "Pose de vernis semi-permanent sur ongles naturels.",
+    "duration": 60,
+    "price": 20,
+    "deposit": 10
+  },
+  {
+    "id": 3,
+    "name": "Remplissage gel",
+    "description": "Entretien d'une pose existante avec correction de la repousse.",
+    "duration": 90,
+    "price": 25,
+    "deposit": 15
+  },
+  {
+    "id": 4,
+    "name": "Gainage sur ongles naturels",
+    "description": "Renforcement de l'ongle naturel avec gel sans rallongement.",
+    "duration": 75,
+    "price": 35,
+    "deposit": 15
+  },
+  {
+    "id": 5,
+    "name": "Dépose",
+    "description": "Retrait professionnel d'une ancienne pose avec soin des ongles naturels.",
+    "duration": 45,
+    "price": 15,
+    "deposit": 10
+  },
+  {
+    "id": 6,
+    "name": "Nail art personnalisé",
+    "description": "Décoration personnalisée selon vos envies et inspirations.",
+    "duration": 45,
+    "price": 35,
+    "deposit": 15
+  }
+]
