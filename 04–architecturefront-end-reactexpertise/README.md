@@ -194,5 +194,6 @@ Frontend (dans un deuxième terminal) :
 ## Évolutions futures
 - Paiement d'acompte avec Stripe
 - Synchronisation Google Calendar
+- Ajout base de données Postgres avec prisma
 
 ---
