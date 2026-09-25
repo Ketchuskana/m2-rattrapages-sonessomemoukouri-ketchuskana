@@ -200,6 +200,6 @@ Frontend (dans un deuxième terminal) :
 ## Liens vidéos
 - Demo site web prise de rdv: https://www.loom.com/share/39925eb0319b4d29b74942428947ef17
 - Demo site web coté admin : https://www.loom.com/share/26d6cf63195e43268ddc42af90ddd8d4
-- 
+- Explication choix techniques ( mettre en vitesse x1.7 ou x2 ): https://www.loom.com/share/49354ccce45547a5aaa320c8e9171ebb
 
 ---
