@@ -19,4 +19,12 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // Le routeur déclare les pages en lazy() : ce n'est pas un
+    // module de composants, le Fast Refresh ne le concerne pas.
+    files: ['src/app/router.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

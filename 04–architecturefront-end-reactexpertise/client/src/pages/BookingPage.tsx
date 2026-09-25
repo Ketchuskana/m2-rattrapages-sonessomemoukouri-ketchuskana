@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useServices } from "../features/services/hooks/useServices";
-
 import { useAvailableSlots } from "../features/booking/hooks/useAvailableSlots";
-import { useCreateBooking } from "../features/booking/hooks/useCreateBooking";
 
 import TimeSlots from "../features/booking/components/TimeSlots";
 import BookingSummary from "../features/booking/components/BookingSummary";
 import BookingForm from "../features/booking/components/BookingForm";
+
 import { useBookingStore } from "../features/booking/store/bookingStore";
 
 import type { BookingFormData } from "../features/booking/schemas/bookingSchema";
@@ -35,16 +34,15 @@ export default function BookingPage() {
     isLoading: slotsLoading,
   } = useAvailableSlots(selectedDate);
 
-  const createBookingMutation =
-    useCreateBooking();
-
   const selectedService = services.find(
     (service) =>
       service.id === selectedServiceId
   );
 
   const setBookingSelection =
-  useBookingStore((state) => state.setBookingSelection);
+    useBookingStore(
+      (state) => state.setBookingSelection
+    );
 
   function handleServiceChange(
     event: React.ChangeEvent<HTMLSelectElement>
@@ -68,28 +66,27 @@ export default function BookingPage() {
   function handleBookingSubmit(
     data: BookingFormData
   ) {
-    createBookingMutation.mutate(
-      data,
-      {
-        onSuccess: (booking) => {
-        if (!selectedService) {
-            return;
-        }
+    if (!selectedService) {
+      return;
+    }
 
-        setBookingSelection({
-            bookingId: booking.id,
-            serviceId: selectedService.id,
-            serviceName: selectedService.name,
-            date: selectedDate,
-            time: selectedTime,
-            price: selectedService.price,
-            deposit: selectedService.deposit,
-        });
+    setBookingSelection({
+      serviceId: selectedService.id,
+      serviceName: selectedService.name,
 
-        navigate("/checkout");
-        },
-      }
-    );
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phone: data.phone,
+
+      date: data.date,
+      time: data.time,
+
+      price: selectedService.price,
+      deposit: selectedService.deposit,
+    });
+
+    navigate("/checkout");
   }
 
   return (
@@ -181,18 +178,7 @@ export default function BookingPage() {
               date={selectedDate}
               time={selectedTime}
               onSubmitBooking={handleBookingSubmit}
-              isSubmitting={
-                createBookingMutation.isPending
-              }
             />
-
-            {createBookingMutation.isError && (
-              <div className="api-error">
-                Impossible de créer la réservation.
-                Le créneau est peut-être déjà pris.
-              </div>
-            )}
-
           </div>
 
           <BookingSummary

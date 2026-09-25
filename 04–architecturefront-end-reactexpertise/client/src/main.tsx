@@ -4,8 +4,11 @@ import { RouterProvider } from "react-router-dom";
 
 import { router } from "./app/router";
 import AppProviders from "./app/providers";
+import { setupAuthInterceptors } from "./features/auth/api/authInterceptors";
 
 import "./index.css";
+
+setupAuthInterceptors();
 
 ReactDOM.createRoot(
   document.getElementById("root")!

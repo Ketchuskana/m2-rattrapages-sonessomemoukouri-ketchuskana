@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import AppLayout from "./AppLayout";
+import ProtectedRoute from "../features/auth/components/ProtectedRoute";
 
 const HomePage =
   lazy(() => import("../pages/HomePage"));
@@ -23,6 +24,9 @@ const ConfirmationPage =
 
 const AdminPage =
   lazy(() => import("../pages/AdminPage"));
+
+const LoginPage =
+  lazy(() => import("../pages/LoginPage"));
 
 function withSuspense(
   element: React.ReactNode
@@ -80,11 +84,23 @@ export const router =
             ),
         },
         {
-          path: "admin",
+          path: "admin/login",
           element:
             withSuspense(
-              <AdminPage />
+              <LoginPage />
             ),
+        },
+        {
+          element: <ProtectedRoute />,
+          children: [
+            {
+              path: "admin",
+              element:
+                withSuspense(
+                  <AdminPage />
+                ),
+            },
+          ],
         },
       ],
     },

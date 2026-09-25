@@ -2,6 +2,8 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const {
   readJson,
@@ -12,11 +14,82 @@ const {
   sendBookingEmails,
 } = require("./services/emailService");
 
+const {
+  requireAdmin,
+} = require("./middlewares/requireAdmin");
+
+if (!process.env.JWT_SECRET) {
+  console.error(
+    "JWT_SECRET manquant dans server/.env : impossible de sécuriser l'administration."
+  );
+  process.exit(1);
+}
+
 const app = express();
 const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
+
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body ?? {};
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email et mot de passe requis.",
+      });
+    }
+
+    let admins = [];
+
+    try {
+      admins = readJson("admins.json");
+    } catch {
+      // Aucun admin créé pour l'instant.
+    }
+
+    const admin = admins.find(
+      (admin) =>
+        admin.email === email.trim().toLowerCase()
+    );
+
+    const isValid =
+      admin &&
+      (await bcrypt.compare(
+        password,
+        admin.passwordHash
+      ));
+
+    // Même message dans les deux cas pour ne pas révéler
+    // quels emails existent.
+    if (!isValid) {
+      return res.status(401).json({
+        message: "Email ou mot de passe incorrect.",
+      });
+    }
+
+    const token = jwt.sign(
+      { sub: admin.id, email: admin.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
+    return res.json({
+      token,
+      admin: {
+        id: admin.id,
+        email: admin.email,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur connexion admin :", error);
+
+    return res.status(500).json({
+      message: "Impossible de se connecter.",
+    });
+  }
+});
 
 app.get("/api/services", (req, res) => {
   try {
@@ -75,7 +148,7 @@ app.get("/api/slots", (req, res) => {
   }
 });
 
-app.get("/api/bookings", (req, res) => {
+app.get("/api/bookings", requireAdmin, (req, res) => {
   try {
     const bookings = readJson("bookings.json");
 
@@ -92,7 +165,7 @@ app.get("/api/bookings", (req, res) => {
   }
 });
 
-app.patch("/api/bookings/:id", (req, res) => {
+app.patch("/api/bookings/:id", requireAdmin, (req, res) => {
   try {
     const bookingId = Number(req.params.id);
     const { status } = req.body;

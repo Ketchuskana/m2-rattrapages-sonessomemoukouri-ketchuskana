@@ -4,6 +4,28 @@ const resend = new Resend(
   process.env.RESEND_API_KEY
 );
 
+// Avec onboarding@resend.dev, Resend n'envoie qu'à l'adresse du compte.
+// Pour écrire aux clients, vérifier un domaine sur Resend et définir EMAIL_FROM.
+const emailFrom =
+  process.env.EMAIL_FROM ||
+  "BookMe <onboarding@resend.dev>";
+
+// Resend ne lève pas d'exception : il renvoie { error }.
+async function sendEmail(options, label) {
+  try {
+    const { error } = await resend.emails.send({
+      from: emailFrom,
+      ...options,
+    });
+
+    if (error) {
+      console.error(`Mail ${label} non envoyé :`, error);
+    }
+  } catch (error) {
+    console.error(`Mail ${label} non envoyé :`, error);
+  }
+}
+
 async function sendBookingEmails(booking) {
   const adminEmail =
     process.env.ADMIN_EMAIL;
@@ -14,8 +36,7 @@ async function sendBookingEmails(booking) {
   const adminSubject =
     "Nouvelle réservation";
 
-  await resend.emails.send({
-    from: "BookMe <onboarding@resend.dev>",
+  await sendEmail({
     to: booking.email,
     subject: clientSubject,
     html: `
@@ -42,10 +63,9 @@ async function sendBookingEmails(booking) {
         RDV-${booking.id}
       </p>
     `,
-  });
+  }, "client");
 
-  await resend.emails.send({
-    from: "BookMe <onboarding@resend.dev>",
+  await sendEmail({
     to: adminEmail,
     subject: adminSubject,
     html: `
@@ -82,7 +102,7 @@ async function sendBookingEmails(booking) {
         RDV-${booking.id}
       </p>
     `,
-  });
+  }, "admin");
 }
 
 module.exports = {

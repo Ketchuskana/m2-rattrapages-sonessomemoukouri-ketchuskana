@@ -4,6 +4,9 @@
 
 node_modules/
 
+# Comptes admin (hash des mots de passe), créés avec npm run create-admin
+server/data/admins.json
+
 dist/
 build/
 

@@ -1,28 +1,51 @@
 import { Navigate, useNavigate } from "react-router-dom";
+
 import { useBookingStore } from "../features/booking/store/bookingStore";
+import { useCreateBooking } from "../features/booking/hooks/useCreateBooking";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
 
+  const createBookingMutation = useCreateBooking();
+
   const {
-    bookingId,
+    serviceId,
     serviceName,
+    firstName,
+    lastName,
+    email,
+    phone,
     date,
     time,
     price,
     deposit,
+    setBookingId,
   } = useBookingStore();
 
-  if (!bookingId) {
+  if (serviceId === null) {
     return <Navigate to="/booking" replace />;
   }
 
-  const remainingAmount = price - deposit;
+  const validServiceId = serviceId;
 
   function handlePayment() {
-    console.log("Paiement de l'acompte :", deposit);
-
-    navigate("/confirmation");
+    createBookingMutation.mutate(
+      {
+        firstName,
+        lastName,
+        email,
+        phone,
+        date,
+        time,
+        serviceId: validServiceId,
+      },
+      {
+        onSuccess: (booking) => {
+          setBookingId(booking.id);
+          navigate("/confirmation");
+        },
+      }
+    );
   }
 
   return (
@@ -32,8 +55,8 @@ export default function CheckoutPage() {
           <h1>Finaliser votre réservation</h1>
 
           <p>
-            Vérifiez les informations avant de procéder
-            au paiement de l'acompte.
+            Vérifiez vos informations avant de confirmer
+            votre acompte.
           </p>
         </div>
       </section>
@@ -41,11 +64,14 @@ export default function CheckoutPage() {
       <section className="section">
         <div className="container checkout-container">
           <div className="checkout-card">
-            <h2>Récapitulatif</h2>
+
+            <h2>Votre rendez-vous</h2>
 
             <div className="summary-row">
-              <span>Réservation</span>
-              <strong>#{bookingId}</strong>
+              <span>Cliente</span>
+              <strong>
+                {firstName} {lastName}
+              </strong>
             </div>
 
             <div className="summary-row">
@@ -69,17 +95,26 @@ export default function CheckoutPage() {
             </div>
 
             <div className="summary-row">
-              <span>Acompte à payer</span>
+              <span>Acompte</span>
               <strong>{deposit} €</strong>
             </div>
 
             <div className="summary-row">
-              <span>Reste à payer</span>
-              <strong>{remainingAmount} €</strong>
+              <span>Reste à régler</span>
+              <strong>{price - deposit} €</strong>
             </div>
+
+            {createBookingMutation.isError && (
+              <div className="api-error">
+                Ce créneau n'est plus disponible.
+                Veuillez revenir à la réservation
+                et choisir une autre heure.
+              </div>
+            )}
 
             <div className="checkout-actions">
               <button
+                type="button"
                 className="btn btn-secondary"
                 onClick={() => navigate("/booking")}
               >
@@ -87,12 +122,17 @@ export default function CheckoutPage() {
               </button>
 
               <button
+                type="button"
                 className="btn btn-primary"
                 onClick={handlePayment}
+                disabled={createBookingMutation.isPending}
               >
-                Payer l'acompte
+                {createBookingMutation.isPending
+                  ? "Validation en cours..."
+                  : `Valider l'acompte de ${deposit} €`}
               </button>
             </div>
+
           </div>
         </div>
       </section>

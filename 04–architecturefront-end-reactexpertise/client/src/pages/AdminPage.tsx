@@ -1,7 +1,30 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { useBookings } from "../features/admin/hooks/useBookings";
 import { useUpdateBookingStatus } from "../features/admin/hooks/useUpdateBookingStatus";
+import { useAuthStore } from "../features/auth/store/authStore";
 
 export default function AdminPage() {
+  const queryClient = useQueryClient();
+
+  const adminEmail = useAuthStore(
+    (state) => state.email
+  );
+
+  const logout = useAuthStore(
+    (state) => state.logout
+  );
+
+  function handleLogout() {
+    // Les réservations ne doivent pas rester en cache
+    // une fois l'admin déconnecté.
+    queryClient.removeQueries({
+      queryKey: ["bookings"],
+    });
+
+    logout();
+  }
+
   const {
     data: bookings = [],
     isLoading,
@@ -62,6 +85,18 @@ export default function AdminPage() {
           <p>
             Gérez les rendez-vous et suivez
             l'activité.
+          </p>
+
+          <p>
+            Connecté en tant que{" "}
+            <strong>{adminEmail}</strong>{" "}
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleLogout}
+            >
+              Se déconnecter
+            </button>
           </p>
         </div>
       </section>
